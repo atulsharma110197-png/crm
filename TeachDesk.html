@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TeachDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f1;--ink:#14302b;--mut:#5b7069;--card:#fff;--acc:#0f6b5c;--onacc:#fff;--hi:#f2b705;--bad:#b83f0c;--ok:#16794a;--line:#d5e0dc;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1b18;--ink:#e6f0ed;--mut:#98b0a9;--card:#162622;--acc:#3fc2a8;--onacc:#06201a;--hi:#f2c230;--bad:#ff9362;--ok:#5fd596;--line:#274039;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1b18;--ink:#e6f0ed;--mut:#98b0a9;--card:#162622;--acc:#3fc2a8;--onacc:#06201a;--hi:#f2c230;--bad:#ff9362;--ok:#5fd596;--line:#274039;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 'Atkinson Hyperlegible',system-ui,sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--acc);color:var(--onacc);padding:12px 16px;z-index:5;display:flex;justify-content:space-between;align-items:center}
+header b{font-size:19px}header span{font-size:13px;opacity:.85}
+main{max-width:760px;margin:0 auto;padding:14px}
+h2{margin:6px 0 10px;font-size:20px}h3{margin:14px 0 6px;font-size:16px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--hi);border-radius:6px;padding:10px}
+.stat b{display:block;font-size:24px}.stat small{color:var(--mut)}
+button,.b{font:inherit;border:0;border-radius:8px;padding:10px 14px;min-height:44px;background:var(--acc);color:var(--onacc);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.g{background:transparent;color:var(--acc);border:1px solid var(--line)}.sm{min-height:36px;padding:6px 10px;font-size:14px}
+.bad{color:var(--bad)}.ok{color:var(--ok)}.mut{color:var(--mut);font-size:14px}
+input,select,textarea{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);min-height:44px}
+label{display:block;margin:8px 0;font-size:14px;color:var(--mut)}label input,label select,label textarea{margin-top:3px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;overflow-x:auto;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:6}
+nav button{background:none;color:var(--mut);flex:0 0 auto;min-width:68px;flex-direction:column;font-size:12px;padding:6px;min-height:50px}
+nav button i{font-style:normal;font-size:20px}nav button.on{color:var(--acc);font-weight:700;box-shadow:inset 0 3px 0 var(--hi)}
+.seg button{background:var(--card);color:var(--ink);border:1px solid var(--line);min-width:44px}
+.seg button.P{background:var(--ok);color:#fff}.seg button.A{background:var(--bad);color:#fff}.seg button.L{background:var(--hi);color:#222}
+.pill{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:6px;border-bottom:1px solid var(--line);text-align:left}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.cal div{padding:8px 0;border-radius:6px;background:var(--card);border:1px solid var(--line);cursor:pointer;min-height:44px}
+.cal .h{background:none;border:0;color:var(--mut);font-size:12px;cursor:default;min-height:0}.cal .t{border-color:var(--acc)}.cal .s{background:var(--acc);color:var(--onacc)}
+.cal i{display:block;width:6px;height:6px;border-radius:9px;background:var(--hi);margin:2px auto 0}
+#sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9;overflow:auto;padding:16px}#sheet.on{display:block}
+.box{background:var(--bg);max-width:560px;margin:0 auto;border-radius:12px;padding:16px}
+.wide{overflow-x:auto}
+@media print{body>*:not(#sheet){display:none!important}#sheet{position:static;background:none;padding:0}.box{max-width:none;background:#fff;color:#000}.row button,.noprint{display:none!important}}
+
+:root{--bg:#f3f4fb;--ink:#191b3a;--mut:#62668a;--card:#fff;--acc:#3b3a8f;--onacc:#fff;--hi:#c79a2e;--bad:#c2410c;--ok:#12805c;--onok:#fff;--onbad:#fff;--line:#dfe1f2}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0e22;--ink:#e8e9ff;--mut:#9a9dc9;--card:#171936;--acc:#a5a3ff;--onacc:#12123a;--hi:#e6c36a;--bad:#ff9a6a;--ok:#5fd7a5;--onok:#06241a;--onbad:#2b1005;--line:#2a2d57}}
+:root[data-theme="dark"]{--bg:#0d0e22;--ink:#e8e9ff;--mut:#9a9dc9;--card:#171936;--acc:#a5a3ff;--onacc:#12123a;--hi:#e6c36a;--bad:#ff9a6a;--ok:#5fd7a5;--onok:#06241a;--onbad:#2b1005;--line:#2a2d57}
+header{background:linear-gradient(120deg,#1f1e55,#4a3fa0 70%,#6b4fb8);color:#fff}
+.card{box-shadow:0 4px 16px rgba(40,40,120,.07)}.stat{box-shadow:0 4px 14px rgba(40,40,120,.08)}
+.seg button.P{background:var(--ok);color:var(--onok)}.seg button.A{background:var(--bad);color:var(--onbad)}.seg button.L{background:var(--hi);color:#2a2105}
+.wg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0 10px}
+.rgs{display:flex;gap:6px;justify-content:space-around}.rg{text-align:center}.rg small{display:block;color:var(--mut)}
+.arc{transition:stroke-dashoffset .9s ease}@media(prefers-reduced-motion:reduce){.arc,.bar i{transition:none}}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--hi));transition:width .4s}
+.tap{cursor:pointer}.tap:active{transform:scale(.99)}
+.st1{background:var(--hi);color:#2a2105;border-color:var(--hi)}.st2{background:var(--ok);color:var(--onok);border-color:var(--ok)}
+.chip{min-height:36px;padding:4px 12px;font-size:14px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:99px}
+.chip.S{background:var(--ok);color:var(--onok)}.chip.L{background:var(--hi);color:#2a2105}.chip.X{background:var(--bad);color:var(--onbad)}
+.opt{width:100%;margin:5px 0;background:var(--card);color:var(--ink);border:2px solid var(--line);justify-content:flex-start;text-align:left}
+.opt:disabled{opacity:1;cursor:default}.opt.right{border-color:var(--ok);background:var(--ok);color:var(--onok)}.opt.wrong{border-color:var(--bad);background:var(--bad);color:var(--onbad)}
+.lb{display:flex;align-items:center;gap:10px;padding:6px 0}.lb .n{width:28px;height:28px;border-radius:50%;background:var(--hi);color:#2a2105;display:grid;place-items:center;font-weight:700}
+</style></head><body>
+<header><b id="ttl">TeachDesk</b><span id="dt"></span></header>
+<main id="main"></main><nav id="nav"></nav><div id="sheet"></div>
+<script>
+const K='teachdesk_v1',$=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const ymd=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const today=()=>ymd(new Date()),inr=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const dow=d=>DAYS[new Date(d+'T00:00').getDay()];
+const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+function demo(){const m=today().slice(0,7),b1=uid(),b2=uid(),s=[['Aarav Sharma',b1,'Rakesh Sharma','9810000001'],['Diya Verma',b1,'Meena Verma','9810000002'],['Kabir Singh',b1,'Harpreet Singh','9810000003'],['Ananya Gupta',b2,'Sunil Gupta','9810000004'],['Rohan Mehta',b2,'Pooja Mehta','9810000005']].map((x,i)=>({id:uid(),name:x[0],batch:x[1],roll:i+1,parent:x[2],phone:x[3],address:'Delhi',joined:'2026-04-01',notes:'',active:'Yes'}));
+const ex=uid();return{demo:true,set:{name:'My Tuition Classes',dueDay:10},
+batches:[{id:b1,name:'Class 9 Maths',subject:'Maths',days:'Mon,Wed,Fri',time:'16:00',fee:1500},{id:b2,name:'Class 10 Science',subject:'Science',days:'Tue,Thu,Sat',time:'17:00',fee:1800}],
+students:s,att:{},fees:[{id:uid(),sid:s[0].id,month:m,amt:1500,disc:0,mode:'UPI',date:today(),rcpt:1001}],
+exams:[{id:ex,batch:b1,name:'Unit Test 1',date:'2026-10-15',max:50,marks:{[s[0].id]:44,[s[1].id]:47,[s[2].id]:31}}],
+ptm:[{id:uid(),sid:s[2].id,date:'2026-10-20',who:'Mother',notes:'Needs more practice in algebra.',action:'Weekly practice sheet',follow:ymd(new Date(Date.now()+3*864e5))}],events:[]}}
+let db;try{db=JSON.parse(localStorage.getItem(K))}catch(e){}if(!db)db=demo();
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}};
+db.chap=db.chap||[];db.hw=db.hw||[];db.quiz=db.quiz||[];
+if(db.demo&&!db.chap.length&&db.batches.length){const b1=db.batches[0].id,b2=(db.batches[1]||db.batches[0]).id;
+db.chap=[['Real numbers',2],['Polynomials',2],['Linear equations',1],['Quadratics',0]].map(x=>({id:uid(),batch:b1,title:x[0],st:x[1],date:''})).concat([['Chemical reactions',2],['Acids and bases',1],['Metals',0]].map(x=>({id:uid(),batch:b2,title:x[0],st:x[1],date:''})));
+const s1=db.students.filter(s=>s.batch==b1);
+db.hw=[{id:uid(),batch:b1,title:'Exercise 2.1, Q1 to 10',due:ymd(new Date(Date.now()+2*864e5)),max:10,sub:s1.length>1?{[s1[0].id]:'S',[s1[1].id]:'L'}:{}}];
+db.quiz=[{id:uid(),batch:b1,q:'What is the degree of x² + 3x + 2?',o:['1','2','3','0'],c:1},{id:uid(),batch:b1,q:'Which of these is a prime number?',o:['21','27','29','33'],c:2},{id:uid(),batch:b1,q:'What is 7 × 8?',o:['54','56','58','64'],c:1}];
+for(let i=0;i<7;i++){const d=ymd(new Date(Date.now()-i*864e5));db.batches.forEach(b=>{const k=d+'|'+b.id;db.att[k]={};db.students.filter(x=>x.batch==b.id).forEach((x,j)=>db.att[k][x.id]=(i+j)%6==0?'A':'P')})}}
+const S=id=>db.students.find(x=>x.id==id),B=id=>db.batches.find(x=>x.id==id);
+const st={v:'dash',q:'',bat:db.batches[0]?.id||'',date:today(),month:today().slice(0,7),exam:'',cm:today().slice(0,7),cd:today(),rep:db.students[0]?.id||''};
+const grade=p=>p>=90?'A+':p>=80?'A':p>=70?'B':p>=60?'C':p>=40?'D':'F';
+const active=()=>db.students.filter(s=>s.active!='No');
+const inB=b=>active().filter(s=>s.batch==b);
+const attKey=(d,b)=>d+'|'+b;
+function pct(sid,month){let t=0,p=0;for(const k in db.att){const[d]=k.split('|');if(month&&!d.startsWith(month))continue;const v=db.att[k][sid];if(v){t++;if(v!='A')p++}}return t?Math.round(p/t*100):null}
+function due(sid,month){const s=S(sid),b=B(s.batch);if(!b||s.active=='No'||s.joined.slice(0,7)>month)return 0;let paid=0;db.fees.filter(f=>f.sid==sid&&f.month==month).forEach(f=>paid+=+f.amt+ +f.disc);return Math.max(0,b.fee-paid)}
+const wa=(ph,t)=>'https://wa.me/91'+String(ph||'').replace(/\D/g,'').slice(-10)+'?text='+encodeURIComponent(t);
+function examRank(e,sid){const a=Object.entries(e.marks).filter(x=>x[1]!=='').sort((x,y)=>y[1]-x[1]);return a.findIndex(x=>x[0]==sid)+1}
+const closeSheet=()=>{$('#sheet').className='';$('#sheet').innerHTML=''};
+function openSheet(h){$('#sheet').innerHTML='<div class="box">'+h+'</div>';$('#sheet').className='on'}
+function form(title,fields,v,onSave,onDel){
+ const f=fields.map(x=>{const val=v[x.k]??'';let i;
+  if(x.t=='select')i=`<select name="${x.k}">${x.o.map(o=>{const[a,b]=Array.isArray(o)?o:[o,o];return`<option value="${esc(a)}" ${a==val?'selected':''}>${esc(b)}</option>`}).join('')}</select>`;
+  else if(x.t=='area')i=`<textarea name="${x.k}" rows="3">${esc(val)}</textarea>`;
+  else i=`<input name="${x.k}" type="${x.t||'text'}" value="${esc(val)}">`;
+  return`<label>${x.l}${i}</label>`}).join('');
+ openSheet(`<h2>${title}</h2><div id="fm">${f}</div><div class="row"><button id="sv">Save</button><button class="g" onclick="closeSheet()">Cancel</button>${onDel?'<button class="g bad" id="dl">Delete</button>':''}</div>`);
+ $('#sv').onclick=()=>{const o={};document.querySelectorAll('#fm [name]').forEach(e=>o[e.name]=e.value);onSave(o);save();closeSheet();render()};
+ if(onDel)$('#dl').onclick=()=>{if(confirm('Delete this? This cannot be undone.')){onDel();save();closeSheet();render()}}}
+const bOpts=()=>db.batches.map(b=>[b.id,b.name]);
+const sOpts=()=>active().map(s=>[s.id,s.name]);
+const selB=(k,fn)=>`<select onchange="st.${k}=this.value;${fn||'render()'}">${db.batches.map(b=>`<option value="${b.id}" ${b.id==st[k]?'selected':''}>${esc(b.name)}</option>`).join('')}</select>`;
+// ---------- Students
+function stuForm(id){const s=id?S(id):{id:uid(),batch:db.batches[0]?.id,joined:today(),active:'Yes'};
+ if(!db.batches.length)return alert('Add a class first.');
+ form(id?'Edit student':'Add student',[{k:'name',l:'Student name'},{k:'batch',l:'Class',t:'select',o:bOpts()},{k:'roll',l:'Roll no.',t:'number'},{k:'parent',l:'Parent name'},{k:'phone',l:'Parent phone / WhatsApp',t:'tel'},{k:'address',l:'Address'},{k:'joined',l:'Joining date',t:'date'},{k:'active',l:'Active?',t:'select',o:['Yes','No']},{k:'notes',l:'Notes',t:'area'}],s,o=>{if(!o.name)return;Object.assign(s,o);if(!id)db.students.push(s)},id&&(()=>{db.students=db.students.filter(x=>x.id!=id)}))}
+// ---------- Classes
+function batForm(id){const b=id?B(id):{id:uid(),fee:1000,time:'16:00'};
+ form(id?'Edit class':'Add class',[{k:'name',l:'Class / batch name'},{k:'subject',l:'Subject'},{k:'days',l:'Days (e.g. Mon,Wed,Fri)'},{k:'time',l:'Time',t:'time'},{k:'fee',l:'Monthly fee (₹)',t:'number'}],b,o=>{if(!o.name)return;o.fee=+o.fee;Object.assign(b,o);if(!id)db.batches.push(b)},id&&(()=>{db.batches=db.batches.filter(x=>x.id!=id)}))}
+// ---------- Attendance
+function mark(b,sid,v){const k=attKey(st.date,b);db.att[k]=db.att[k]||{};db.att[k][sid]=db.att[k][sid]==v?'':v;if(!db.att[k][sid])delete db.att[k][sid];save();render()}
+function allP(b){const k=attKey(st.date,b);db.att[k]=db.att[k]||{};inB(b).forEach(s=>db.att[k][s.id]='P');save();render()}
+// ---------- Fees
+function payForm(sid){const s=S(sid),n=Math.max(0,...db.fees.map(f=>f.rcpt||0),1000)+1;
+ form('Record fee: '+s.name,[{k:'month',l:'Fee month',t:'month'},{k:'amt',l:'Amount paid (₹)',t:'number'},{k:'disc',l:'Discount (₹)',t:'number'},{k:'mode',l:'Mode',t:'select',o:['Cash','UPI','Bank']},{k:'date',l:'Date',t:'date'}],{month:st.month,amt:due(sid,st.month),disc:0,mode:'Cash',date:today()},o=>{if(!+o.amt&&!+o.disc)return;const fe={id:uid(),sid,month:o.month,amt:+o.amt,disc:+o.disc,mode:o.mode,date:o.date,rcpt:n};db.fees.push(fe);setTimeout(()=>receipt(fe.id),50)})}
+function receipt(id){const f=db.fees.find(x=>x.id==id);if(!f)return;const s=S(f.sid),b=B(s.batch);
+ openSheet(`<div style="text-align:center"><h2>${esc(db.set.name)}</h2><b>Fee receipt #${f.rcpt}</b></div><table><tr><td>Student</td><td>${esc(s.name)}</td></tr><tr><td>Class</td><td>${esc(b?.name)}</td></tr><tr><td>Fee month</td><td>${f.month}</td></tr><tr><td>Paid</td><td><b>${inr(f.amt)}</b> via ${f.mode}</td></tr><tr><td>Discount</td><td>${inr(f.disc)}</td></tr><tr><td>Date</td><td>${fmt(f.date)}</td></tr></table><div class="row noprint" style="margin-top:12px"><button onclick="window.print()">Print</button><a class="b g" target="_blank" href="${wa(s.phone,`Fee receipt #${f.rcpt}: ${inr(f.amt)} received for ${s.name} (${f.month}). Thank you! – ${db.set.name}`)}">Send on WhatsApp</a><button class="g" onclick="closeSheet()">Close</button></div>`)}
+// ---------- Marks
+function examForm(id){const e=id?db.exams.find(x=>x.id==id):{id:uid(),batch:st.bat,date:today(),max:100,marks:{}};
+ form(id?'Edit test':'New test',[{k:'name',l:'Test name'},{k:'batch',l:'Class',t:'select',o:bOpts()},{k:'date',l:'Date',t:'date'},{k:'max',l:'Maximum marks',t:'number'}],e,o=>{if(!o.name)return;o.max=+o.max;Object.assign(e,o);if(!id)db.exams.push(e)},id&&(()=>{db.exams=db.exams.filter(x=>x.id!=id)}))}
+function marksSheet(id){const e=db.exams.find(x=>x.id==id);
+ openSheet(`<h2>${esc(e.name)} (out of ${e.max})</h2>${inB(e.batch).map(s=>`<label>${esc(s.name)}<input type="number" data-s="${s.id}" max="${e.max}" value="${e.marks[s.id]??''}"></label>`).join('')}<div class="row"><button id="ms">Save marks</button><button class="g" onclick="closeSheet()">Cancel</button></div>`);
+ $('#ms').onclick=()=>{document.querySelectorAll('[data-s]').forEach(i=>{if(i.value==='')delete e.marks[i.dataset.s];else e.marks[i.dataset.s]=Math.min(+i.value,e.max)});save();closeSheet();render()}}
+// ---------- PTM & events
+function ptmForm(id){const p=id?db.ptm.find(x=>x.id==id):{id:uid(),sid:active()[0]?.id,date:today(),who:'Mother'};
+ form(id?'Edit PTM':'New PTM record',[{k:'sid',l:'Student',t:'select',o:sOpts()},{k:'date',l:'Date',t:'date'},{k:'who',l:'Who attended',t:'select',o:['Mother','Father','Both','Guardian','Did not attend']},{k:'notes',l:'Discussion points',t:'area'},{k:'action',l:'Action items',t:'area'},{k:'follow',l:'Follow-up date',t:'date'}],p,o=>{Object.assign(p,o);if(!id)db.ptm.push(p)},id&&(()=>{db.ptm=db.ptm.filter(x=>x.id!=id)}))}
+function evForm(){form('Add event or holiday',[{k:'title',l:'Title'},{k:'date',l:'Date',t:'date'}],{date:st.cd},o=>{if(o.title)db.events.push({id:uid(),...o})})}
+function dayItems(d){const r=[];db.batches.forEach(b=>{if(b.days.toLowerCase().includes(dow(d).toLowerCase()))r.push('Class: '+b.name+' at '+b.time)});
+ db.exams.filter(e=>e.date==d).forEach(e=>r.push('Test: '+e.name));db.ptm.filter(p=>p.date==d).forEach(p=>r.push('PTM: '+S(p.sid)?.name));db.ptm.filter(p=>p.follow==d).forEach(p=>r.push('Follow-up: '+S(p.sid)?.name));
+ if(+d.slice(8)==+db.set.dueDay)r.push('Fees due today');db.events.filter(e=>e.date==d).forEach(e=>r.push('Event: '+e.title));return r}
+// ---------- Views
+const V={
+dash(){const t=today(),cl=db.batches.filter(b=>b.days.toLowerCase().includes(dow(t).toLowerCase())),m=t.slice(0,7);
+ const ab=[];for(const k in db.att){if(k.startsWith(t))for(const s in db.att[k])if(db.att[k][s]=='A'&&S(s))ab.push(S(s))}
+ const dues=active().filter(s=>due(s.id,m)>0),tot=dues.reduce((a,s)=>a+due(s.id,m),0),fu=db.ptm.filter(p=>p.follow>=t&&p.follow<=ymd(new Date(Date.now()+7*864e5)));
+ return`<div class="grid"><div class="stat"><b>${active().length}</b><small>Active students</small></div><div class="stat"><b>${cl.length}</b><small>Classes today</small></div><div class="stat"><b>${ab.length}</b><small>Absent today</small></div><div class="stat"><b>${inr(tot)}</b><small>Fees pending this month</small></div></div>
+ ${widgets()}<h3>Today’s classes</h3>${cl.map(b=>`<div class="card row sp"><span><b>${esc(b.name)}</b><br><span class="mut">${b.time} · ${inB(b.id).length} students</span></span><button class="sm" onclick="st.bat='${b.id}';st.date=today();go('att')">Take attendance</button></div>`).join('')||'<p class="mut">No classes today. Enjoy the break.</p>'}
+ <h3>Absent today</h3>${ab.map(s=>`<div class="card row sp">${esc(s.name)}<a class="b sm g" target="_blank" href="${wa(s.phone,`Dear ${s.parent}, ${s.name} was absent from class today. – ${db.set.name}`)}">Message parent</a></div>`).join('')||'<p class="mut">Nobody marked absent yet.</p>'}
+ <h3>PTM follow-ups this week</h3>${fu.map(p=>`<div class="card">${esc(S(p.sid)?.name)} · ${fmt(p.follow)}<br><span class="mut">${esc(p.action)}</span></div>`).join('')||'<p class="mut">No follow-ups due.</p>'}
+ <div class="row" style="margin-top:12px"><button onclick="stuForm()">+ Student</button><button class="g" onclick="go('fees')">Record fee</button><button class="g" onclick="examForm()">+ Test</button><button class="g" onclick="ptmForm()">+ PTM</button><button class="g" onclick="hwForm()">+ Homework</button></div>`},
+students(){const q=st.q.toLowerCase(),l=db.students.filter(s=>(s.name+s.parent+s.phone).toLowerCase().includes(q));
+ return`<div class="row sp"><h2>Students</h2><button onclick="stuForm()">+ Add</button></div><input placeholder="Search name, parent or phone" value="${esc(st.q)}" oninput="st.q=this.value;render(1)" id="q">
+ ${l.map(s=>`<div class="card row sp"><span><b>${esc(s.name)}</b> ${s.active=='No'?'<span class="pill">inactive</span>':''}<br><span class="mut">${esc(B(s.batch)?.name)} · ${esc(s.parent)} · ${esc(s.phone)}</span></span><span class="row"><a class="b sm g" href="tel:${esc(s.phone)}">Call</a><button class="sm g" onclick="stuForm('${s.id}')">Edit</button></span></div>`).join('')||'<p class="mut">No students yet. Tap Add to enter your first one.</p>'}`},
+classes(){return`<div class="row sp"><h2>Classes</h2><button onclick="batForm()">+ Add</button></div>${db.batches.map(b=>`<div class="card row sp"><span><b>${esc(b.name)}</b><br><span class="mut">${esc(b.days)} · ${b.time} · ${inr(b.fee)}/month · ${inB(b.id).length} students</span></span><button class="sm g" onclick="batForm('${b.id}')">Edit</button></div>`).join('')||'<p class="mut">Add your first class to begin.</p>'}`},
+att(){const b=st.bat,k=attKey(st.date,b),a=db.att[k]||{};
+ return`<h2>Attendance</h2><div class="row">${selB('bat')}<input type="date" value="${st.date}" onchange="st.date=this.value;render()"></div><div class="row" style="margin:8px 0"><button class="sm" onclick="allP('${b}')">Mark all present</button></div>
+ ${inB(b).map(s=>{const p=pct(s.id,st.month);return`<div class="card row sp"><span><b>${esc(s.name)}</b><br><span class="mut">This month: ${p==null?'–':p+'%'}</span></span><span class="row seg">${['P','A','L'].map(v=>`<button class="${a[s.id]==v?v:''}" onclick="mark('${b}','${s.id}','${v}')">${v}</button>`).join('')}${a[s.id]=='A'?`<a class="b sm g" target="_blank" href="${wa(s.phone,`Dear ${s.parent}, ${s.name} was absent from ${B(b).name} on ${fmt(st.date)}. – ${db.set.name}`)}">WhatsApp</a>`:''}</span></div>`}).join('')||'<p class="mut">No students in this class.</p>'}<p class="mut">P = present, A = absent, L = late (counts as present).</p>`},
+fees(){const m=st.month,col=db.fees.filter(f=>f.month==m).reduce((a,f)=>a+ +f.amt,0);
+ return`<h2>Fees</h2><div class="row"><input type="month" value="${m}" onchange="st.month=this.value;render()"><span class="stat"><b>${inr(col)}</b><small>collected for ${m}</small></span></div>
+ ${active().map(s=>{const d=due(s.id,m),b=B(s.batch);return`<div class="card row sp"><span><b>${esc(s.name)}</b><br><span class="${d?'bad':'ok'}">${d?'Due '+inr(d):'Paid'}</span> <span class="mut">of ${inr(b?.fee)}</span></span><span class="row"><button class="sm" onclick="payForm('${s.id}')">Record</button>${d?`<a class="b sm g" target="_blank" href="${wa(s.phone,`Dear ${s.parent}, fee of ${inr(d)} for ${s.name} (${m}) is pending. Kindly pay at your earliest. – ${db.set.name}`)}">Remind</a>`:''}</span></div>`}).join('')}
+ <h3>Receipts for ${m}</h3>${db.fees.filter(f=>f.month==m).map(f=>`<div class="card row sp"><span>#${f.rcpt} · ${esc(S(f.sid)?.name)} · ${inr(f.amt)} ${f.mode}</span><button class="sm g" onclick="receipt('${f.id}')">View</button></div>`).join('')||'<p class="mut">No payments this month.</p>'}`},
+marks(){const l=db.exams.filter(e=>e.batch==st.bat);
+ return`<div class="row sp"><h2>Marks</h2><button onclick="examForm()">+ New test</button></div>${selB('bat')}
+ ${l.map(e=>{const v=Object.values(e.marks).map(Number),avg=v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1):'–';
+ return`<div class="card"><div class="row sp"><b>${esc(e.name)}</b><span class="mut">${fmt(e.date)} · max ${e.max} · avg ${avg}</span></div><div class="wide"><table>${inB(e.batch).map(s=>{const m=e.marks[s.id],p=m===undefined?null:Math.round(m/e.max*100);return`<tr><td>${esc(s.name)}</td><td>${m??'–'}</td><td>${p==null?'':p+'% ('+grade(p)+')'}</td><td>${p==null?'':'Rank '+examRank(e,s.id)}</td></tr>`}).join('')}</table></div><div class="row" style="margin-top:8px"><button class="sm" onclick="marksSheet('${e.id}')">Enter marks</button><button class="sm g" onclick="examForm('${e.id}')">Edit</button></div></div>`}).join('')||'<p class="mut">No tests for this class yet.</p>'}`},
+ptm(){return`<div class="row sp"><h2>PTM records</h2><button onclick="ptmForm()">+ Add</button></div>${[...db.ptm].sort((a,b)=>b.date.localeCompare(a.date)).map(p=>`<div class="card"><div class="row sp"><b>${esc(S(p.sid)?.name)}</b><span class="mut">${fmt(p.date)} · ${esc(p.who)}</span></div><p>${esc(p.notes)}</p><p class="mut">Action: ${esc(p.action)||'–'} · Follow-up: ${fmt(p.follow)||'–'}</p><button class="sm g" onclick="ptmForm('${p.id}')">Edit</button></div>`).join('')||'<p class="mut">No PTM records yet.</p>'}`},
+cal(){const[y,m]=st.cm.split('-').map(Number),f=new Date(y,m-1,1).getDay(),n=new Date(y,m,0).getDate(),shift=d=>{const x=new Date(y,m-1+d,1);return ymd(x).slice(0,7)};let c=DAYS.map(d=>`<div class="h">${d}</div>`).join('')+'<div class="h"></div>'.repeat(f);
+ for(let i=1;i<=n;i++){const d=st.cm+'-'+String(i).padStart(2,'0');c+=`<div class="${d==today()?'t ':''}${d==st.cd?'s':''}" onclick="st.cd='${d}';render()">${i}${dayItems(d).length?'<i></i>':''}</div>`}
+ return`<div class="row sp"><button class="g sm" onclick="st.cm='${shift(-1)}';render()">‹</button><h2>${new Date(y,m-1).toLocaleDateString('en-IN',{month:'long',year:'numeric'})}</h2><button class="g sm" onclick="st.cm='${shift(1)}';render()">›</button></div><div class="cal">${c}</div>
+ <div class="row sp"><h3>${fmt(st.cd)}</h3><button class="sm" onclick="evForm()">+ Event</button></div>${dayItems(st.cd).map(x=>`<div class="card">${esc(x)}</div>`).join('')||'<p class="mut">Nothing scheduled.</p>'}`},
+reports(){const s=S(st.rep),m=st.month;let card='';
+ if(s){const b=B(s.batch),ex=db.exams.filter(e=>e.batch==s.batch&&e.marks[s.id]!==undefined).sort((a,b)=>a.date.localeCompare(b.date)),ps=ex.map(e=>Math.round(e.marks[s.id]/e.max*100)),pn=db.ptm.filter(p=>p.sid==s.id),paid=db.fees.filter(f=>f.sid==s.id).reduce((a,f)=>a+ +f.amt,0);
+ const spark=ps.length?`<svg viewBox="0 0 200 60" width="100%" height="60">${ps.map((p,i)=>`<rect x="${i*(200/ps.length)+6}" y="${58-p*.55}" width="${Math.max(8,200/ps.length-14)}" height="${p*.55}" fill="var(--acc)"/>`).join('')}</svg>`:'';
+ card=`<div class="card" id="rc"><h2 style="text-align:center">${esc(db.set.name)}<br><small>Progress report</small></h2><p><b>${esc(s.name)}</b> · ${esc(b?.name)} · Parent: ${esc(s.parent)}</p>
+ <p>Attendance overall: <b>${pct(s.id)??'–'}%</b> · this month: <b>${pct(s.id,m)??'–'}%</b></p>
+ <table><tr><th>Test</th><th>Marks</th><th>%</th><th>Grade</th><th>Rank</th></tr>${ex.map(e=>{const p=Math.round(e.marks[s.id]/e.max*100);return`<tr><td>${esc(e.name)}</td><td>${e.marks[s.id]}/${e.max}</td><td>${p}%</td><td>${grade(p)}</td><td>${examRank(e,s.id)}</td></tr>`}).join('')}</table>${spark}
+ <p>Fees: ${due(s.id,m)?'<span class="bad">'+inr(due(s.id,m))+' pending for '+m+'</span>':'<span class="ok">'+m+' paid</span>'} · Total paid ${inr(paid)}</p>
+ <h3>PTM notes</h3>${pn.map(p=>`<p>${fmt(p.date)}: ${esc(p.notes)} <span class="mut">(${esc(p.action)})</span></p>`).join('')||'<p class="mut">None.</p>'}<button class="noprint" onclick="window.print()">Print report</button></div>`}
+ const dd=active().filter(x=>due(x.id,m)>0);
+ return`<h2>Reports</h2><div class="row"><select onchange="st.rep=this.value;render()">${active().map(x=>`<option value="${x.id}" ${x.id==st.rep?'selected':''}>${esc(x.name)}</option>`).join('')}</select><input type="month" value="${m}" onchange="st.month=this.value;render()"></div>${card}
+ <h3>Defaulters for ${m}</h3>${dd.map(x=>`<div class="card row sp">${esc(x.name)}<b class="bad">${inr(due(x.id,m))}</b></div>`).join('')||'<p class="ok">No pending fees.</p>'}`},
+learn(){const b=st.bat,l=db.chap.filter(c=>c.batch==b);
+ return`<div class="row sp"><h2>Syllabus tracker</h2><button onclick="chapForm()">+ Chapter</button></div>${selB('bat')}
+ <div class="card row">${ring(chapPct(b),'complete')}<div><b>${l.filter(c=>c.st==2).length} of ${l.length} chapters done</b><br><span class="mut">Tap a chapter to move it forward: not started, teaching, done.</span></div></div>
+ ${l.map(c=>`<div class="card row sp tap" onclick="cyc('${c.id}')"><span><b>${esc(c.title)}</b>${c.date?`<br><span class="mut">Target ${fmt(c.date)}</span>`:''}</span><span class="row"><span class="pill st${c.st}">${['Not started','Teaching','Done'][c.st]}</span><button class="sm g" onclick="event.stopPropagation();chapForm('${c.id}')">Edit</button></span></div>`).join('')||'<p class="mut">Add the chapters you plan to teach and track progress as you go.</p>'}`},
+hw(){const l=db.hw.filter(h=>h.batch==st.bat);
+ return`<div class="row sp"><h2>Homework</h2><button onclick="hwForm()">+ Assign</button></div>${selB('bat')}
+ ${l.map(h=>{const ss=inB(h.batch),n=ss.filter(x=>h.sub[x.id]=='S'||h.sub[x.id]=='L').length;
+ return`<div class="card"><div class="row sp"><b>${esc(h.title)}</b><span class="pill ${h.due<today()&&n<ss.length?'bad':''}">Due ${fmt(h.due)}</span></div><div class="bar"><i style="width:${ss.length?n/ss.length*100:0}%"></i></div><span class="mut">${n} of ${ss.length} submitted. Tap a name: ✓ on time, ⏱ late, ✗ not done.</span>
+ <div class="row" style="margin-top:8px">${ss.map(x=>`<button class="chip ${h.sub[x.id]||''}" onclick="hwTap('${h.id}','${x.id}')">${esc(x.name.split(' ')[0])}${{S:' ✓',L:' ⏱',X:' ✗'}[h.sub[x.id]]||''}</button>`).join('')}</div>
+ <div class="row" style="margin-top:8px"><button class="sm g" onclick="hwNudge('${h.id}')">Remind pending</button><button class="sm g" onclick="hwForm('${h.id}')">Edit</button></div></div>`}).join('')||'<p class="mut">No homework assigned to this class yet.</p>'}`},
+quiz(){const l=qList(),z=st.qz,sel=selB('bat','st.qz.on=0;render()');
+ if(z.on&&l.length){
+  if(z.i>=l.length){const p=Math.round(z.score/l.length*100);return`<h2>Quiz complete</h2><div class="card" style="text-align:center">${ring(p,z.score+' of '+l.length+' correct',120)}<div class="row" style="justify-content:center;margin-top:10px"><button onclick="qStart()">Play again</button><button class="g" onclick="st.qz.on=0;render()">Back to questions</button></div></div>`}
+  const q=l[z.i];
+  return`<div class="row sp"><h2>Live quiz</h2><button class="g sm" onclick="st.qz.on=0;render()">Exit</button></div><div class="bar"><i style="width:${z.i/l.length*100}%"></i></div><div class="card"><h3 style="color:var(--ink);font-size:19px">Q${z.i+1}. ${esc(q.q)}</h3>${q.o.map((o,i)=>`<button class="opt ${z.pick!=null?(i==q.c?'right':i==z.pick?'wrong':''):''}" onclick="qPick(${i})" ${z.pick!=null?'disabled':''}>${'ABCD'[i]}. ${esc(o)}</button>`).join('')}${z.pick!=null?`<button style="margin-top:8px" onclick="qNext()">${z.i+1<l.length?'Next question':'See score'}</button>`:''}</div>`}
+ return`<div class="row sp"><h2>Quick quiz</h2><button onclick="quizForm()">+ Question</button></div>${sel}
+ ${l.length?`<div class="row" style="margin:8px 0"><button onclick="qStart()">Start live quiz (${l.length} questions)</button></div>`:''}
+ ${l.map((q,i)=>`<div class="card row sp"><span><b>Q${i+1}.</b> ${esc(q.q)}<br><span class="mut">Answer: ${'ABCD'[q.c]}. ${esc(q.o[q.c])}</span></span><button class="sm g" onclick="quizForm('${q.id}')">Edit</button></div>`).join('')||'<p class="mut">Add a few questions, then run a live quiz for the class from your phone or a projector.</p>'}`},
+settings(){return`<h2>Settings</h2><div class="card"><label>Teacher / institute name<input id="sn" value="${esc(db.set.name)}"></label><label>Fee due day of month<input id="sd" type="number" min="1" max="28" value="${db.set.dueDay}"></label><button onclick="db.set.name=$('#sn').value||'TeachDesk';db.set.dueDay=+$('#sd').value||10;save();render()">Save settings</button></div>
+ <h3>Backup</h3><div class="card"><p class="mut">Your data lives only on this device. Copy a backup now and then.</p><div class="row"><button class="g" onclick="backup()">Backup data</button><button class="g" onclick="restore()">Restore data</button></div></div>
+ <h3>Data</h3><div class="card row">${db.demo?'<button class="g bad" onclick="if(confirm(\'Remove all demo data and start fresh?\')){db={demo:false,set:db.set,batches:[],students:[],att:{},fees:[],exams:[],ptm:[],events:[]};save();render()}">Clear demo data</button>':'<button class="g bad" onclick="if(confirm(\'Delete ALL data?\')){db=demo();db.demo=false;db.batches=[];db.students=[];db.exams=[];db.fees=[];db.ptm=[];save();render()}">Delete all data</button>'}</div>`}};
+function backup(){openSheet(`<h2>Backup</h2><textarea id="bk" rows="8" readonly>${esc(JSON.stringify(db))}</textarea><div class="row" style="margin-top:8px"><button onclick="$('#bk').select();document.execCommand('copy')">Copy</button><button class="g" onclick="closeSheet()">Close</button></div><p class="mut">Paste this text into Notes or WhatsApp to keep it safe.</p>`)}
+function restore(){openSheet(`<h2>Restore</h2><textarea id="rs" rows="8" placeholder="Paste your backup text here"></textarea><div class="row" style="margin-top:8px"><button id="rb">Restore</button><button class="g" onclick="closeSheet()">Cancel</button></div>`);$('#rb').onclick=()=>{try{const d=JSON.parse($('#rs').value);if(!d.students)throw 0;db=d;save();closeSheet();render()}catch(e){alert('That backup text is not valid.')}}}
+st.qz={on:0,i:0,score:0,pick:null};
+function ring(p,l,sz=84){const r=34,c=(2*Math.PI*r).toFixed(1);return`<div class="rg"><svg viewBox="0 0 84 84" width="${sz}" height="${sz}"><circle cx="42" cy="42" r="${r}" fill="none" stroke="var(--line)" stroke-width="8"/><circle class="arc" cx="42" cy="42" r="${r}" fill="none" stroke="var(--hi)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-o="${(c*(1-p/100)).toFixed(1)}" transform="rotate(-90 42 42)"/><text x="42" y="47" text-anchor="middle" font-size="16" font-weight="700" fill="var(--ink)">${p}%</text></svg><small>${esc(l)}</small></div>`}
+const chapPct=b=>{const l=db.chap.filter(c=>c.batch==b);return l.length?Math.round(l.reduce((a,c)=>a+c.st/2,0)/l.length*100):0};
+function widgets(){const m=today().slice(0,7);let t=0,p=0;for(const k in db.att)for(const x in db.att[k]){t++;if(db.att[k][x]!='A')p++}
+ const att=t?Math.round(p/t*100):0,pend=active().reduce((a,x)=>a+due(x.id,m),0),col=db.fees.filter(f=>f.month==m).reduce((a,f)=>a+ +f.amt,0),fp=col+pend?Math.round(col/(col+pend)*100):0,ca=db.chap.length?Math.round(db.chap.reduce((a,c)=>a+c.st/2,0)/db.chap.length*100):0;
+ const bars=[...Array(7)].map((_,i)=>{const d=ymd(new Date(Date.now()-(6-i)*864e5));let n=0,q=0;for(const k in db.att)if(k.startsWith(d))for(const x in db.att[k]){n++;if(db.att[k][x]!='A')q++}return{d,t:n,v:n?Math.round(q/n*100):0}});
+ const top=active().map(x=>{const a=db.exams.filter(e=>e.marks[x.id]!==undefined).map(e=>e.marks[x.id]/e.max*100);return{x,v:a.length?Math.round(a.reduce((u,w)=>u+w,0)/a.length):null}}).filter(r=>r.v!=null).sort((a,b)=>b.v-a.v).slice(0,3);
+ const risk=active().map(x=>({x,v:pct(x.id)})).filter(r=>r.v!=null&&r.v<75);
+ return`<div class="card"><div class="rgs">${ring(att,'Attendance')}${ring(fp,'Fees collected')}${ring(ca,'Syllabus done')}</div></div>
+ <div class="wg"><div class="card"><b>Attendance, last 7 days</b><svg viewBox="0 0 280 90" width="100%">${bars.map((x,i)=>`<rect x="${i*40+8}" y="${70-x.v*.6}" width="24" height="${x.t?Math.max(3,x.v*.6):3}" rx="4" fill="${x.t?'var(--acc)':'var(--line)'}"/><text x="${i*40+20}" y="86" text-anchor="middle" font-size="10" fill="var(--mut)">${dow(x.d)[0]}</text>${x.t?`<text x="${i*40+20}" y="${66-x.v*.6}" text-anchor="middle" font-size="9" fill="var(--mut)">${x.v}</text>`:''}`).join('')}</svg></div>
+ <div class="card"><b>Top performers</b>${top.map((r,i)=>`<div class="lb"><span class="n">${i+1}</span><span style="flex:1">${esc(r.x.name)}</span><b>${r.v}%</b></div>`).join('')||'<p class="mut">Enter test marks to see your toppers.</p>'}<b style="display:block;margin-top:10px">Needs attention</b>${risk.map(r=>`<div class="lb"><span style="flex:1">${esc(r.x.name)}</span><b class="bad">${r.v}%</b></div>`).join('')||'<p class="ok">Everyone is above 75% attendance.</p>'}</div></div>`}
+function cyc(id){const c=db.chap.find(x=>x.id==id);c.st=(c.st+1)%3;save();render()}
+function chapForm(id){const c=id?db.chap.find(x=>x.id==id):{id:uid(),batch:st.bat,st:0};
+ form(id?'Edit chapter':'Add chapter',[{k:'title',l:'Chapter or topic'},{k:'batch',l:'Class',t:'select',o:bOpts()},{k:'date',l:'Target date (optional)',t:'date'}],c,o=>{if(!o.title)return;Object.assign(c,o);if(!id)db.chap.push(c)},id&&(()=>{db.chap=db.chap.filter(x=>x.id!=id)}))}
+function hwForm(id){const h=id?db.hw.find(x=>x.id==id):{id:uid(),batch:st.bat,due:ymd(new Date(Date.now()+2*864e5)),max:10,sub:{}};
+ form(id?'Edit homework':'Assign homework',[{k:'title',l:'Homework title'},{k:'batch',l:'Class',t:'select',o:bOpts()},{k:'due',l:'Due date',t:'date'},{k:'max',l:'Maximum marks',t:'number'}],h,o=>{if(!o.title)return;Object.assign(h,o);if(!id)db.hw.push(h)},id&&(()=>{db.hw=db.hw.filter(x=>x.id!=id)}))}
+function hwTap(id,sid){const h=db.hw.find(x=>x.id==id),o=['','S','L','X'];h.sub[sid]=o[(o.indexOf(h.sub[sid]||'')+1)%4];if(!h.sub[sid])delete h.sub[sid];save();render()}
+function hwNudge(id){const h=db.hw.find(x=>x.id==id),l=inB(h.batch).filter(x=>!['S','L'].includes(h.sub[x.id]));
+ openSheet(`<h2>Pending: ${esc(h.title)}</h2>${l.map(x=>`<div class="card row sp">${esc(x.name)}<a class="b sm" target="_blank" href="${wa(x.phone,`Dear ${x.parent}, homework "${h.title}" for ${x.name} is due on ${fmt(h.due)}. – ${db.set.name}`)}">WhatsApp</a></div>`).join('')||'<p class="ok">Everyone has submitted.</p>'}<button class="g" onclick="closeSheet()">Close</button>`)}
+function quizForm(id){const q=id?db.quiz.find(x=>x.id==id):{id:uid(),batch:st.bat,q:'',o:['','','',''],c:0};
+ form(id?'Edit question':'New question',[{k:'q',l:'Question'},{k:'a',l:'Option A'},{k:'b',l:'Option B'},{k:'c',l:'Option C'},{k:'d',l:'Option D'},{k:'ans',l:'Correct answer',t:'select',o:['A','B','C','D']}],{q:q.q,a:q.o[0],b:q.o[1],c:q.o[2],d:q.o[3],ans:'ABCD'[q.c]},o=>{if(!o.q||!o.a||!o.b)return;q.q=o.q;q.o=[o.a,o.b,o.c,o.d].filter(x=>x);q.c=Math.min('ABCD'.indexOf(o.ans),q.o.length-1);if(!id)db.quiz.push(q)},id&&(()=>{db.quiz=db.quiz.filter(x=>x.id!=id)}))}
+const qList=()=>db.quiz.filter(q=>q.batch==st.bat);
+function qStart(){st.qz={on:1,i:0,score:0,pick:null};render()}
+function qPick(i){if(i==qList()[st.qz.i].c)st.qz.score++;st.qz.pick=i;render()}
+function qNext(){st.qz.i++;st.qz.pick=null;render()}
+const TABS_PLACEHOLDER=0;
+const TABS=[['dash','Home','⌂'],['students','Students','☺'],['att','Attend','✓'],['fees','Fees','₹'],['marks','Marks','★'],['learn','Syllabus','☰'],['hw','Homework','✐'],['quiz','Quiz','⚡'],['ptm','PTM','✎'],['cal','Calendar','▦'],['reports','Reports','▤'],['classes','Classes','▣'],['settings','Settings','⚙']];
+function go(v){st.v=v;if(!B(st.bat))st.bat=db.batches[0]?.id||'';if(!S(st.rep))st.rep=db.students[0]?.id||'';render();scrollTo(0,0)}
+function render(keep){db.chap=db.chap||[];db.hw=db.hw||[];db.quiz=db.quiz||[];$('#ttl').textContent=db.set.name;$('#dt').textContent=fmt(today());
+ $('#nav').innerHTML=TABS.map(t=>`<button class="${t[0]==st.v?'on':''}" onclick="go('${t[0]}')"><i>${t[2]}</i>${t[1]}</button>`).join('');
+ $('#main').innerHTML=V[st.v]();requestAnimationFrame(()=>document.querySelectorAll('.arc').forEach(a=>a.style.strokeDashoffset=a.dataset.o));if(keep){const q=$('#q');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}}}
+render();
+</script></body></html>
